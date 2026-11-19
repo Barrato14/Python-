@@ -127,31 +127,31 @@ async def mentor(payload: MentorRequest, authorization: str | None = Header(defa
                         "stream": True,
                         "messages": [
                             {"role": "system", "content": system},
-                            {"role": "user", "content": f"Completed lessons: {context}\\nLearner question: {payload.question}"},
+                            {"role": "user", "content": f"Completed lessons: {context}\nLearner question: {payload.question}"},
                         ],
                     },
                 ) as response:
                     if response.status_code >= 400:
-                        yield "data: " + json.dumps({"error": "The Sage AI service is busy or unavailable. Please try again."}) + "\\n\\n"
+                        yield "data: " + json.dumps({"error": "The Sage AI service is busy or unavailable. Please try again."}) + "\n\n"
                         return
                     async for line in response.aiter_lines():
                         if not line.startswith("data: "):
                             continue
                         raw = line[6:]
                         if raw == "[DONE]":
-                            yield "data: [DONE]\\n\\n"
+                            yield "data: [DONE]\n\n"
                             return
                         try:
                             event = json.loads(raw)
                             delta = event.get("choices", [{}])[0].get("delta", {}).get("content")
                             if delta:
-                                yield "data: " + json.dumps({"delta": delta}) + "\\n\\n"
+                                yield "data: " + json.dumps({"delta": delta}) + "\n\n"
                         except (ValueError, IndexError, TypeError):
                             continue
         except httpx.TimeoutException:
-            yield "data: " + json.dumps({"error": "The Sage response timed out. Please try again."}) + "\\n\\n"
+            yield "data: " + json.dumps({"error": "The Sage response timed out. Please try again."}) + "\n\n"
         except httpx.HTTPError:
-            yield "data: " + json.dumps({"error": "The Sage could not reach its AI service. Please try again."}) + "\\n\\n"
+            yield "data: " + json.dumps({"error": "The Sage could not reach its AI service. Please try again."}) + "\n\n"
     return StreamingResponse(
         stream_reply(),
         media_type="text/event-stream",
