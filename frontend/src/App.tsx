@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Activity, ArrowLeft, ArrowRight, Award, BookOpen, Check, CheckCircle2, ChevronRight, CircleHelp, Code2, Compass, Crown, Flame, Gamepad2, Gem, Home, LogOut, Map as MapIcon, Menu, Play, Search, ShieldCheck, Sparkles, Swords, Terminal, Trophy, Zap, X } from "lucide-react";
+import { Activity, ArrowLeft, ArrowRight, Award, BookOpen, Check, CheckCircle2, ChevronRight, CircleHelp, Code2, Compass, Crown, Flame, FolderGit2, Download, Gamepad2, Gem, Home, LogOut, Map as MapIcon, Menu, Play, Search, ShieldCheck, Sparkles, Swords, Terminal, Trophy, Zap, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 
 type Lesson={slug:string;title:string;world:string;time:string;summary:string;body:string;code:string;question:string;options:string[];answer:number;explain:string};
