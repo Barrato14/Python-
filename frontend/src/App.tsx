@@ -33,7 +33,8 @@ self.onmessage=async(event)=>{
 type Player={total_xp:number;level:number;current_streak:number;longest_streak:number};
 type LearnerProject={id:string;title:string;description:string;code:string;created_at:string};
 type DailyChallenge={slug:string;title:string;description:string;prompt:string;starter_code:string;xp_reward:number};
-type RankRow={rank:number;username:string;display_name:string;level:number;total_xp:number;current_streak:number};\ntype Quest={slug:string;title:string;description:string;goal_type:string;goal_value:number;xp_reward:number;world_name:string|null;progress_value?:number;completed_at?:string|null;claimed?:boolean};
+type RankRow={rank:number;username:string;display_name:string;level:number;total_xp:number;current_streak:number};
+type Quest={slug:string;title:string;description:string;goal_type:string;goal_value:number;xp_reward:number;world_name:string|null;progress_value?:number;completed_at?:string|null;claimed?:boolean};
 export default function App(){
  const [user,setUser]=useState<any>(null),[page,setPage]=useState<"home"|"map"|"learn"|"lesson"|"quests"|"skills"|"playground"|"workshop"|"guild">("home"),[selected,setSelected]=useState(lessons[0].slug),[done,setDone]=useState<string[]>([]),[answer,setAnswer]=useState<number|null>(null),[checked,setChecked]=useState(false),[loading,setLoading]=useState(true),[email,setEmail]=useState(""),[authBusy,setAuthBusy]=useState(false),[notice,setNotice]=useState(""),[search,setSearch]=useState(""),[player,setPlayer]=useState<Player>({total_xp:0,level:1,current_streak:0,longest_streak:0}),[quests,setQuests]=useState<Quest[]>([]),[unlocked,setUnlocked]=useState<string[]>([]),[busy,setBusy]=useState(false),[code,setCode]=useState(starterCode),[runState,setRunState]=useState<"idle"|"loading"|"running"|"done"|"error">("idle"),[output,setOutput]=useState<{kind:string;text:string}[]>([]),[mobileNav,setMobileNav]=useState(false),[projects,setProjects]=useState<LearnerProject[]>([]),[projectTitle,setProjectTitle]=useState("My first Python project"),[projectDescription,setProjectDescription]=useState("A small program I built in Python Odyssey."),[projectCode,setProjectCode]=useState(starterCode),[mentorQuestion,setMentorQuestion]=useState("I keep getting confused by loops. How do I practice?"),[mentorReplyText,setMentorReplyText]=useState(""),[mentorLoading,setMentorLoading]=useState(false),[dailyChallenge,setDailyChallenge]=useState<DailyChallenge|null>(null),[challengeAnswer,setChallengeAnswer]=useState(""),[challengeResult,setChallengeResult]=useState<any>(null),[leaderboard,setLeaderboard]=useState<RankRow[]>([]);
  const workerRef=useRef<Worker|null>(null),timerRef=useRef<number|undefined>(undefined);
@@ -57,7 +58,8 @@ export default function App(){
   }
   if(achRows.data)setUnlocked(achRows.data.map(x=>x.achievement_slug));
   const [daily,rank]=await Promise.all([supabase.rpc("get_daily_challenge"),supabase.rpc("get_public_leaderboard",{p_limit:20})]);
-  if(daily.data?.[0])setDailyChallenge(daily.data[0] as DailyChallenge);\n  if(rank.data)setLeaderboard(rank.data as RankRow[]);\n  const saved=await supabase.from("learner_projects").select("id,title,description,code,created_at").eq("user_id",uid).order("created_at",{ascending:false}).limit(20);
+  if(daily.data?.[0])setDailyChallenge(daily.data[0] as DailyChallenge);
+  if(rank.data)setLeaderboard(rank.data as RankRow[]);\n  const saved=await supabase.from("learner_projects").select("id,title,description,code,created_at").eq("user_id",uid).order("created_at",{ascending:false}).limit(20);
   if(saved.data)setProjects(saved.data as LearnerProject[]);
  },[]);
  useEffect(()=>{if(page!=="playground"&&workerRef.current){workerRef.current.terminate();workerRef.current=null;if(timerRef.current)window.clearTimeout(timerRef.current);setRunState("idle")}},[page]);
