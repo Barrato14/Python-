@@ -1,7 +1,9 @@
 from collections import defaultdict, deque
 from time import monotonic
+import json
 import httpx
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -33,6 +35,7 @@ email_test_calls = defaultdict(deque)
 class MentorRequest(BaseModel):
     question: str = Field(min_length=2, max_length=1200)
     completed_lessons: list[str] = Field(default_factory=list, max_length=20)
+    mode: str = Field(default="explain", pattern="^(explain|debug|hint)$")
 
 async def authenticated_user(authorization: str | None) -> dict:
     if not authorization or not authorization.lower().startswith("bearer "):
@@ -95,35 +98,65 @@ async def mentor(payload: MentorRequest, authorization: str | None = Header(defa
     bucket.append(now)
     if not settings.openai_api_key:
         return {"mode": "fallback", "reply": "The Sage's crystal is offline, but your quest continues. Break the problem into one small step, predict the result, then test it in the Code Lab. Ask about a specific Python topic and I can guide you with the built-in study hints."}
+    mode_guidance = {
+        "explain": "Explain the concept step by step in beginner-friendly language. Use one small runnable example.",
+        "debug": "Act as a debugging coach. Explain the likely cause and give a corrected minimal example when enough information is available.",
+        "hint": "Give a small hint first. Do not reveal the full solution unless the learner explicitly asks for it."
+    }[payload.mode]
     system = (
         "You are the Sage, a patient, encouraging Python tutor inside a pixel-art RPG learning game. "
-        "Teach beginners. Give hints before full solutions; explain errors kindly; use short runnable Python examples. "
+        "Teach beginner programmers. Explain errors kindly and use short runnable Python examples. "
         "Never claim code was executed. Do not ask for passwords, secrets, or personal data. "
         "If asked for harmful, credential-stealing, or destructive code, refuse and redirect to safe learning. "
-        "Keep answers under 180 words and end with one small practice step."
+        "Keep answers concise, ideally under 130 words, and end with one small practice step. "
+        + mode_guidance
     )
     context = ", ".join(payload.completed_lessons[:20]) or "No completed lessons recorded."
-    async with httpx.AsyncClient(timeout=25) as client:
-        response = await client.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {settings.openai_api_key}", "Content-Type": "application/json"},
-            json={
-                "model": settings.openai_model,
-                "temperature": 0.4,
-                "max_tokens": 260,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": f"Completed lessons: {context}\nLearner question: {payload.question}"},
-                ],
-            },
-        )
-    if response.status_code >= 400:
-        raise HTTPException(status_code=502, detail="The Sage is unavailable right now. Try the built-in study hints.")
-    data = response.json()
-    reply = data.get("choices", [{}])[0].get("message", {}).get("content", "")
-    if not reply:
-        raise HTTPException(status_code=502, detail="The Sage could not form a reply. Please try again.")
-    return {"mode": "ai", "reply": reply[:2500]}
+    async def stream_reply():
+        try:
+            timeout = httpx.Timeout(35.0, connect=8.0, read=20.0, write=10.0, pool=5.0)
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                async with client.stream(
+                    "POST",
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {settings.openai_api_key}", "Content-Type": "application/json"},
+                    json={
+                        "model": settings.openai_model,
+                        "temperature": 0.35,
+                        "max_tokens": 200,
+                        "stream": True,
+                        "messages": [
+                            {"role": "system", "content": system},
+                            {"role": "user", "content": f"Completed lessons: {context}\\nLearner question: {payload.question}"},
+                        ],
+                    },
+                ) as response:
+                    if response.status_code >= 400:
+                        yield "data: " + json.dumps({"error": "The Sage AI service is busy or unavailable. Please try again."}) + "\\n\\n"
+                        return
+                    async for line in response.aiter_lines():
+                        if not line.startswith("data: "):
+                            continue
+                        raw = line[6:]
+                        if raw == "[DONE]":
+                            yield "data: [DONE]\\n\\n"
+                            return
+                        try:
+                            event = json.loads(raw)
+                            delta = event.get("choices", [{}])[0].get("delta", {}).get("content")
+                            if delta:
+                                yield "data: " + json.dumps({"delta": delta}) + "\\n\\n"
+                        except (ValueError, IndexError, TypeError):
+                            continue
+        except httpx.TimeoutException:
+            yield "data: " + json.dumps({"error": "The Sage response timed out. Please try again."}) + "\\n\\n"
+        except httpx.HTTPError:
+            yield "data: " + json.dumps({"error": "The Sage could not reach its AI service. Please try again."}) + "\\n\\n"
+    return StreamingResponse(
+        stream_reply(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
+    )
 
 @app.get("/api/v1/email/status", tags=["email"])
 async def email_status(authorization: str | None = Header(default=None)):
