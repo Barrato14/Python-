@@ -22,9 +22,10 @@ self.onmessage=async(event)=>{
  const code=event.data.code;
  try{
   if(!runtime){runtime=await loadPyodide();self.fetch=()=>Promise.reject(new Error("Network access is disabled in this playground."));self.XMLHttpRequest=undefined;self.WebSocket=undefined;}
-  let output="";
-  runtime.setStdout({batched:(s)=>{output+=s+"\\n";self.postMessage({type:"stdout",text:s});}});
-  runtime.setStderr({batched:(s)=>{output+=s+"\\n";self.postMessage({type:"stderr",text:s});}});
+  let outputSize=0;
+  const emit=(type,text)=>{const chunk=String(text).slice(0,2000);if(outputSize>=4000)return;outputSize+=chunk.length;self.postMessage({type,text:chunk});};
+  runtime.setStdout({batched:(s)=>emit("stdout",s)});
+  runtime.setStderr({batched:(s)=>emit("stderr",s)});
   await runtime.runPythonAsync(code);
   self.postMessage({type:"done"});
  }catch(error){self.postMessage({type:"error",text:String(error)});}
