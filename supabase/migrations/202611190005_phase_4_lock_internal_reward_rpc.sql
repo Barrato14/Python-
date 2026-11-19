@@ -1,0 +1,1 @@
+revoke all on function public.complete_lesson_reward(text) from public, anon, authenticated;
