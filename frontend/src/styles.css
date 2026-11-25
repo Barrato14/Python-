@@ -135,3 +135,18 @@
 @media(max-width:850px){.boss-realm-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.boss-realm-grid{grid-template-columns:1fr}.boss-card-art{height:120px}.practice-boss-cta{grid-template-columns:auto 1fr}.practice-boss-cta button{grid-column:1/-1;width:100%;justify-content:center}.boss-card-copy{padding:15px}}
 @media(prefers-reduced-motion:reduce){.boss-card-art>span,.boss-monster,.boss-monster.boss-attack,.boss-monster.boss-damage,.boss-monster.boss-victory{animation:none!important}}
+
+
+/* Reliable replayable combat animation states */
+.boss-monster{transform-origin:center bottom;will-change:transform,filter}
+.boss-monster.boss-attack{animation:boss-lunge .62s cubic-bezier(.2,.8,.25,1) both!important}
+.boss-monster.boss-damage{animation:boss-hit .58s ease-in-out both!important}
+.boss-monster.boss-victory{animation:boss-victory .9s ease-in-out infinite alternate!important}
+.boss-arena:has(.boss-monster.boss-attack) .boss-heading{animation:arena-impact .62s ease-out}
+.boss-arena:has(.boss-monster.boss-damage) .boss-heading{animation:arena-recoil .58s ease-out}
+@keyframes boss-lunge{0%{transform:translateX(0) scale(1);filter:brightness(1)}22%{transform:translateX(-13px) scale(1.08);filter:brightness(1.2)}48%{transform:translateX(-42px) scale(1.18);filter:brightness(1.7) drop-shadow(0 0 15px #b7f58d)}72%{transform:translateX(8px) scale(.94);filter:brightness(1.3)}100%{transform:translateX(0) scale(1);filter:brightness(1)}}
+@keyframes boss-hit{0%,100%{transform:translateX(0) rotate(0);filter:brightness(1)}18%,54%{transform:translateX(-11px) rotate(-5deg);filter:brightness(2) sepia(1) saturate(2)}36%,72%{transform:translateX(11px) rotate(5deg);filter:brightness(.6)}}
+@keyframes boss-victory{from{transform:translateY(0) scale(1);filter:drop-shadow(0 0 8px #f5d98e)}to{transform:translateY(-12px) scale(1.12);filter:drop-shadow(0 0 25px #f5d98e) brightness(1.25)}}
+@keyframes arena-impact{0%,100%{filter:none}45%{filter:brightness(1.22)}}
+@keyframes arena-recoil{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.boss-monster.boss-attack,.boss-monster.boss-damage,.boss-monster.boss-victory,.boss-arena:has(.boss-monster.boss-attack) .boss-heading,.boss-arena:has(.boss-monster.boss-damage) .boss-heading{animation:none!important}}
