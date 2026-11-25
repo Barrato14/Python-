@@ -68,3 +68,32 @@
 .practice-actions .pixel-btn{min-height:42px}
 .nav-item:focus-visible,.mobile-menu:focus-visible,.nav-backdrop:focus-visible{outline:2px solid #b9e6a5;outline-offset:3px}
 @media(max-width:560px){.nav-backdrop{display:block;position:fixed;inset:0;z-index:18;border:0;background:#05090bd1;backdrop-filter:blur(2px);padding:0}.game-sidebar.nav-open{z-index:20;overflow-y:auto;max-height:100dvh}.practice-stats span{font-size:6px}.practice-actions .pixel-btn{flex:1;min-width:130px}}
+
+
+/* Boss battle and relic progression */
+.battle-relic{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;margin:22px 0;padding:18px;border:2px solid #b99a54;background:linear-gradient(120deg,#352b1d,#202b25);box-shadow:4px 4px 0 #080d0e}
+.relic-art{width:54px;height:54px;display:grid;place-items:center;border:2px solid #f2d58b;background:#8b6830;color:#fff1b9;font-size:27px;box-shadow:0 0 22px #f4cf6b55}
+.battle-relic b{color:#f5d98e;font:8px var(--pixel);line-height:1.7}.battle-relic p{margin:6px 0 0;color:#c5c9ad;font-size:10px;line-height:1.6}
+.boss-arena{max-width:900px;margin:22px auto;padding:clamp(18px,4vw,30px)}
+.boss-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #45584a}
+.boss-heading h2{margin:13px 0 7px;color:#f1d88e;font:clamp(14px,2vw,19px) var(--pixel);line-height:1.7}
+.boss-heading p,.boss-result p{color:#aabca8;font-size:11px;line-height:1.7}
+.boss-monster{width:112px;height:90px;display:grid;place-items:center;border:3px solid #9bd78b;background:radial-gradient(circle at 50% 35%,#b9f58c,#438d56 58%,#244b38);color:#152b20;font-size:55px;text-shadow:3px 3px #d9f8a8;box-shadow:0 8px 0 #101a16,0 0 28px #82d88a44;animation:boss-float 2s ease-in-out infinite}
+@keyframes boss-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.battle-bars{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0}
+.battle-bars>div{display:grid;grid-template-columns:1fr auto;gap:7px 10px;color:#b8c9b1;font:7px var(--pixel)}
+.battle-bars b{color:#f2d58d;font:12px var(--terminal)}
+.battle-bars i{grid-column:1/-1;height:12px;overflow:hidden;border:1px solid #526b54;background:#111a18}
+.battle-bars em{display:block;height:100%;background:#a5d88f;transition:width .25s}
+.battle-bars>div:last-child em{background:#d77e76}
+.boss-instruction{margin:20px 0;padding:15px;border:1px dashed #6d805d;background:#18251e}
+.boss-instruction b{color:#d8e9ad;font:8px var(--pixel)}
+.boss-instruction p{margin:8px 0;color:#a9b9a4;font-size:10px}
+.boss-instruction code{display:block;padding:12px;background:#10191a;color:#f2d58d;font:14px var(--terminal);overflow-wrap:anywhere}
+.boss-editor-label{display:grid;gap:9px;margin:18px 0;color:#b8d5ae;font:8px var(--pixel)}
+.boss-editor-label textarea{width:100%;box-sizing:border-box;resize:vertical;padding:14px;border:1px solid #526653;background:#10191a;color:#d6efc8;font:14px/1.6 var(--terminal);outline:none}
+.boss-editor-label textarea:focus{border-color:#a5d88f;box-shadow:0 0 0 2px #a5d88f22}
+.boss-note{margin:12px 0 0;color:#819585;font-size:9px;line-height:1.6}
+.boss-result{max-width:900px;margin:20px auto;padding:28px;text-align:center;border-color:#9ac58c}
+.boss-result-icon{font-size:42px}.boss-result h2{color:#e8d58f;font:12px var(--pixel);line-height:1.8}
+@media(max-width:620px){.battle-relic{grid-template-columns:auto 1fr}.battle-relic .pixel-btn{grid-column:1/-1;width:100%}.boss-heading{align-items:flex-start}.boss-monster{width:76px;height:70px;font-size:39px}.battle-bars{gap:10px}.battle-bars>div{font-size:6px}}
