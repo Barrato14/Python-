@@ -97,3 +97,41 @@
 .boss-result{max-width:900px;margin:20px auto;padding:28px;text-align:center;border-color:#9ac58c}
 .boss-result-icon{font-size:42px}.boss-result h2{color:#e8d58f;font:12px var(--pixel);line-height:1.8}
 @media(max-width:620px){.battle-relic{grid-template-columns:auto 1fr}.battle-relic .pixel-btn{grid-column:1/-1;width:100%}.boss-heading{align-items:flex-start}.boss-monster{width:76px;height:70px;font-size:39px}.battle-bars{gap:10px}.battle-bars>div{font-size:6px}}
+
+
+/* Dedicated multi-realm boss encounters */
+.boss-realm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}
+.boss-realm-card{overflow:hidden;border:2px solid #526b54;background:#1a2823;box-shadow:5px 5px 0 #080d0e}
+.boss-card-art{height:145px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 50%,#628d55,#203c31 70%);border-bottom:2px solid #526b54}
+.boss-card-art:before,.boss-card-art:after{content:"";position:absolute;bottom:-28px;width:120px;height:100px;background:#182c25;transform:rotate(35deg)}
+.boss-card-art:after{right:-35px;transform:rotate(-35deg)}
+.boss-card-art>span{position:relative;z-index:1;display:grid;place-items:center;width:90px;height:82px;border:3px solid #c2e6a1;background:#79b86f;color:#17301e;font-size:48px;box-shadow:0 9px 0 #14251c,0 0 30px #9bd78b66;animation:boss-float 2.3s ease-in-out infinite}
+.boss-card-art>small{position:absolute;z-index:2;top:12px;left:13px;color:#e4edc6;font:7px var(--pixel);letter-spacing:1px}
+.boss-card-copy{padding:18px}
+.boss-rank{color:#b5d69c;font:7px var(--pixel)}
+.boss-card-copy h2{margin:10px 0 5px;color:#f1d88e;font:11px var(--pixel);line-height:1.8}
+.boss-card-copy p{margin:0;color:#9eb19f;font-size:10px}
+.boss-card-meta{display:flex;justify-content:space-between;margin:17px 0;padding:10px 0;border-top:1px solid #3c5142;border-bottom:1px solid #3c5142;color:#c1d5b8;font:7px var(--pixel)}
+.boss-card-copy .pixel-btn{width:100%;min-height:40px;justify-content:center}
+.boss-goblin .boss-card-art{background:radial-gradient(circle at 50% 40%,#8b9d54,#293d2c 70%);border-color:#84945a}
+.boss-goblin .boss-card-art>span{background:#94a65c;border-color:#d3e18e;box-shadow:0 9px 0 #293522,0 0 30px #c0d77966}
+.boss-dragon .boss-card-art{background:radial-gradient(circle at 50% 40%,#a65b42,#3b2029 72%);border-color:#a65b42}
+.boss-dragon .boss-card-art>span{background:#9e5548;border-color:#f0b08a;color:#fff0d6;box-shadow:0 9px 0 #351d24,0 0 30px #e8896666}
+.boss-goblin{border-color:#71804e}.boss-dragon{border-color:#9b594d}
+.boss-guide{padding:18px;margin:18px 0}
+.boss-guide>b{color:#e8d58f;font:8px var(--pixel)}
+.boss-guide p{color:#a9b9a4;font-size:10px;line-height:1.8}
+.boss-instruction small{display:block;margin-top:10px;color:#b7d59e;font-size:9px}
+.boss-monster.boss-attack{animation:boss-lunge .48s ease-in-out}
+.boss-monster.boss-damage{animation:boss-hit .48s ease-in-out}
+.boss-monster.boss-victory{animation:boss-victory .8s ease-in-out infinite alternate;filter:drop-shadow(0 0 15px #f5d98e)}
+@keyframes boss-lunge{0%{transform:translateX(0) scale(1)}35%{transform:translateX(-32px) scale(1.12)}65%{transform:translateX(18px) scale(.94)}100%{transform:translateX(0) scale(1)}}
+@keyframes boss-hit{0%,100%{transform:translateX(0);filter:brightness(1)}20%,60%{transform:translateX(-9px);filter:brightness(1.8) sepia(1)}40%,80%{transform:translateX(9px);filter:brightness(.65)}}
+@keyframes boss-victory{from{transform:translateY(0) scale(1);filter:drop-shadow(0 0 8px #f5d98e)}to{transform:translateY(-9px) scale(1.1);filter:drop-shadow(0 0 25px #f5d98e)}}
+.practice-boss-cta{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px;margin:18px 0;padding:14px;border:1px solid #8c7848;background:#29281d}
+.practice-boss-cta>span{font-size:28px;color:#f1d88e}
+.practice-boss-cta b{color:#f1d88e;font:7px var(--pixel)}
+.practice-boss-cta p{margin:6px 0 0;color:#b4b69b;font-size:9px;line-height:1.6}
+@media(max-width:850px){.boss-realm-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.boss-realm-grid{grid-template-columns:1fr}.boss-card-art{height:120px}.practice-boss-cta{grid-template-columns:auto 1fr}.practice-boss-cta button{grid-column:1/-1;width:100%;justify-content:center}.boss-card-copy{padding:15px}}
+@media(prefers-reduced-motion:reduce){.boss-card-art>span,.boss-monster,.boss-monster.boss-attack,.boss-monster.boss-damage,.boss-monster.boss-victory{animation:none!important}}
