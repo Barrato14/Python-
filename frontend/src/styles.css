@@ -59,3 +59,12 @@
 .mentor-answer>div{white-space:pre-wrap;overflow-wrap:anywhere}
 .mentor-cursor{color:#b5e5a8;animation:blink .8s steps(2) infinite}
 @media(max-width:420px){.mentor-controls{align-items:flex-start}.mentor-controls .board-link{font-size:7px}}
+
+.nav-backdrop{display:none}
+.practice-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.practice-stats span{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #455b4b;background:#17231f;color:#a9c6a4;font:7px var(--pixel)}
+.practice-stats b{color:#f2d17b;font:16px var(--terminal)}
+.practice-actions{align-items:center}
+.practice-actions .pixel-btn{min-height:42px}
+.nav-item:focus-visible,.mobile-menu:focus-visible,.nav-backdrop:focus-visible{outline:2px solid #b9e6a5;outline-offset:3px}
+@media(max-width:560px){.nav-backdrop{display:block;position:fixed;inset:0;z-index:18;border:0;background:#05090bd1;backdrop-filter:blur(2px);padding:0}.game-sidebar.nav-open{z-index:20;overflow-y:auto;max-height:100dvh}.practice-stats span{font-size:6px}.practice-actions .pixel-btn{flex:1;min-width:130px}}
